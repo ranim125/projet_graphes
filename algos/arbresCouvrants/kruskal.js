@@ -1,26 +1,45 @@
 import { isConnected } from "../utils/connexe.js";
+
 export function kruskal(g) {
   // =========================
   // 🔴 Vérifications initiales
   // =========================
   if (!g || typeof g !== "object") {
-    throw new Error("Graphe invalide");
+    return {
+      success: false,
+      error: "Graphe invalide"
+    };
   }
   if (!isConnected(g)) {
-  throw new Error("Graphe non connexe");
-}
+    return {
+      success: false,
+      error: "Le graphe n'est pas connexe"
+    };
+  }
 
   if (typeof g.n !== "number" || g.n <= 0) {
-    throw new Error("Nombre de sommets invalide");
+    return {
+      success: false,
+      error: "Nombre de sommets invalide"
+    };
   }
 
   if (!g.adj || typeof g.adj !== "object") {
-    throw new Error("Liste d'adjacence invalide");
+    return {
+      success: false,
+      error: "Liste d'adjacence invalide"
+    };
   }
 
   // Cas limite : un seul sommet
   if (g.n === 1) {
-    return [];
+    return {
+      success: true,
+      result: {
+        arbre: [],
+        coutTotal: 0
+      }
+    };
   }
 
   // =========================
@@ -32,7 +51,10 @@ export function kruskal(g) {
     const u = Number(uStr);
 
     if (!Array.isArray(g.adj[u])) {
-      throw new Error(`Adj invalide pour sommet ${u}`);
+      return {
+        success: false,
+        error: `Adj invalide pour sommet ${u}`
+      };
     }
 
     for (const edge of g.adj[u]) {
@@ -40,7 +62,10 @@ export function kruskal(g) {
       const w = edge.w;
 
       if (typeof v !== "number" || typeof w !== "number") {
-        throw new Error("Arête invalide");
+        return {
+          success: false,
+          error: "Arête invalide"
+        };
       }
 
       // éviter doublons (graphe non orienté)
@@ -113,8 +138,20 @@ export function kruskal(g) {
   // ⚠️ Vérification connexité
   // =========================
   if (mst.length !== g.n - 1) {
-    throw new Error("Le graphe n'est pas connexe (MST incomplet)");
+    return {
+      success: false,
+      error: "Le graphe n'est pas connexe (MST incomplet)"
+    };
   }
 
-  return mst;
+  // Calcul du coût total
+  const coutTotal = mst.reduce((somme, arete) => somme + arete.w, 0);
+
+  return {
+    success: true,
+    result: {
+      arbre: mst,
+      coutTotal: coutTotal
+    }
+  };
 }

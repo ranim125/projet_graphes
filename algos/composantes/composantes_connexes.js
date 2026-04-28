@@ -1,4 +1,4 @@
-import { dfs } from "./Utils/dfs.js";
+import { dfs } from "../utils/dfs.js";
 
 /**
  * Trouve les composantes connexes d’un graphe non orienté

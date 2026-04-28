@@ -1,4 +1,4 @@
-import { transposeGraph } from "./Utils/InverseGraph.js";
+import { transposeGraph } from "../utils/InverseGraph.js";
 
 /**
  * Algorithme de Kosaraju pour les CFC

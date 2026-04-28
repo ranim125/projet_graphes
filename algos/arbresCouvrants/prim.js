@@ -1,19 +1,41 @@
 import { isConnected } from "../utils/connexe.js";
+
 export function prim(g) {
   if (!g || typeof g !== "object") {
-    throw new Error("Graphe invalide");
+    return {
+      success: false,
+      error: "Graphe invalide"
+    };
   }
   if (!isConnected(g)) {
-  throw new Error("Graphe non connexe");
-}
+    return {
+      success: false,
+      error: "Graphe non connexe"
+    };
+  }
 
-  if (g.n === 0) return [];
-  if (g.n === 1) return [];
+  if (g.n === 0) {
+    return {
+      success: true,
+      result: {
+        arbre: [],
+        coutTotal: 0
+      }
+    };
+  }
+  if (g.n === 1) {
+    return {
+      success: true,
+      result: {
+        arbre: [],
+        coutTotal: 0
+      }
+    };
+  }
 
   const visited = new Set();
   const mst = [];
 
-  // commencer par le sommet 1
   visited.add(1);
 
   while (visited.size < g.n) {
@@ -21,8 +43,6 @@ export function prim(g) {
 
     for (const u of visited) {
       for (const { v, w } of g.adj[u]) {
-
-        // on cherche une arête vers un sommet non visité
         if (!visited.has(v)) {
           if (!minEdge || w < minEdge.w) {
             minEdge = { u, v, w };
@@ -31,14 +51,24 @@ export function prim(g) {
       }
     }
 
-    // si aucune arête trouvée → graphe non connexe
     if (!minEdge) {
-      throw new Error("Graphe non connexe");
+      return {
+        success: false,
+        error: "Graphe non connexe"
+      };
     }
 
     mst.push(minEdge);
     visited.add(minEdge.v);
   }
 
-  return mst;
+  const coutTotal = mst.reduce((sum, edge) => sum + edge.w, 0);
+
+  return {
+    success: true,
+    result: {
+      arbre: mst,
+      coutTotal: coutTotal
+    }
+  };
 }
